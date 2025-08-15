@@ -1,0 +1,39 @@
+name: Build Windows (EXE)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter version
+        run: flutter --version
+        shell: bash
+
+      - name: Create Windows platform
+        run: flutter create . --platforms=windows
+        shell: bash
+
+      - name: Install dependencies
+        run: flutter pub get
+        shell: bash
+
+      - name: Build Windows (release)
+        run: flutter build windows --release
+        shell: bash
+
+      - name: Upload Windows Release folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: wa_nux_windows_release
+          path: build/windows/x64/runner/Release/
